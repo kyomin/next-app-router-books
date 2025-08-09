@@ -1,5 +1,12 @@
 import { BookData } from "@/types";
 import style from "./page.module.css";
+import { notFound } from "next/navigation";
+
+// 명시된 param 경로는 빌드 시점에 캐싱해 두고,
+// 명시되지 않은 param 경로는 첫 요청에서 서버 사이드 생성 후 사용자에게 응답하고 캐싱한다.
+export function generateStaticParams() {
+  return [{ id: "1" }, { id: "2" }, { id: "3" }];
+}
 
 export default async function Page({
   params,
@@ -13,6 +20,10 @@ export default async function Page({
   );
 
   if (!response.ok) {
+    if (response.status === 404) {
+      notFound();
+    }
+
     return <div>오류가 발생했습니다 ...</div>;
   }
 
